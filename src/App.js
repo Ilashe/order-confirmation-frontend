@@ -25,15 +25,30 @@ function App() {
   };
 
   const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImages(prev => [...prev, { id: Date.now() + Math.random(), src: event.target.result, file }]);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+  const files = Array.from(e.target.files);
+
+  files.forEach((file) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      const base64String = event.target.result.split(',')[1]; // ✅ STRIP data:image prefix
+
+      setImages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + Math.random(),
+          content: base64String,     // ✅ SEND TO BACKEND
+          type: file.type,           // ✅ image/png
+          filename: file.name,       // ✅ product.png
+          preview: event.target.result // 👁️ KEEP for UI preview
+        }
+      ]);
+    };
+
+    reader.readAsDataURL(file);
+  });
+};
+
 
   const removeImage = (id) => {
     setImages(prev => prev.filter(img => img.id !== id));
