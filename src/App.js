@@ -62,7 +62,12 @@ function App() {
 
     setLoading(true);
     try {
-      const imageData = images.map(img => img.src);
+      const imageData = images.map(img => ({
+        content: img.content,
+        type: img.type,
+        filename: img.filename
+      }));
+
 
       // Use environment variable for backend URL
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
